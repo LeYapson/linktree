@@ -171,7 +171,7 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 - 🎮 Twitch: [@yatokishi](https://twitch.tv/yatokishi)
 - 🐦 Twitter: [@yatokishi](https://twitter.com/yatokishi)
 - 📺 YouTube: [@yatokishi](https://youtube.com/@yatokishi)
-- 💬 Discord: [Serveur](https://discord.gg/votre-serveur)
+- 💬 Discord: [Serveur](https://discord.gg/93fJgDmhec)
 
 ## 🙏 Remerciements
 
