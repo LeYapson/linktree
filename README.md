@@ -1,195 +1,140 @@
-# 🎮 Linktree Pixel Art - yatokishi
+# 🎮 YATOKISHI Linktree Pixel OS
 
-Un Linktree personnalisé avec un design pixel art moderne, des animations fluides et une interface responsive pour VTuber/Streamer.
+Un site Linktree rétro inspiré des interfaces RPG et consoles 8-bit, avec un menu interactif, un boot screen animé, et deux mini-jeux intégrés.
 
 ![Preview](https://img.shields.io/badge/Status-Live-brightgreen)
 ![Version](https://img.shields.io/badge/Version-1.0-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## ✨ Fonctionnalités
 
-- 🎨 **Design Pixel Art** : Interface rétro avec police "Press Start 2P"
-- 🌟 **Animations Modernes** : Effets de particules, avatars flottants, étoiles scintillantes
-- 📱 **Responsive Design** : Adapté à tous les écrans (mobile, tablette, desktop)
-- 🚀 **Performance Optimisée** : Icônes SVG intégrées, animations CSS fluides
-- 💫 **Effets Visuels** : Parallax subtil, neige pixelisée, particules au clic
-- 🎭 **Thème VTuber** : Couleurs et style adaptés au monde du streaming
+- 🎮 **Boot screen animé** : séquence de démarrage style console
+- 💬 **Dialogues à effet machine à écrire** sur la page principale
+- 🔗 **Menu de liens** vers Twitch, X, Discord, YouTube, Ko-fi
+- ⚔️ **Mini-jeux intégrés** : duel et donjon via overlays
+- 🔊 **Effets sonores 8-bit** avec Web Audio API
+- 🕹️ **Contrôles clavier et clics** pour navigation et gameplay
+- 🗄️ **Enregistrement local** du record et de l'or gagné
+- 🖥️ **Design pixel art responsive** avec effet CRT
 
-## 🎯 Démonstration
+## 🎯 Sections du projet
 
-### Sections Principales
-- **Profil** : Avatar animé avec halo rotatif et informations personnelles
-- **Réseaux Sociaux** : Icônes officielles avec tooltips et couleurs authentiques
-- **Support** : Liens vers Throne Wishlist et donations StreamElements
-- **Contact Pro** : Mail professionnel, commissions et partenariats
+- **Boot screen** : écran de démarrage animé puis masqué au premier clic
+- **Portrait de personnage** : image pixel art dans `assets`
+- **Menu principal** : actions et liens de navigation
+- **Overlay Duel** : combat contre Yatokishi avec quatre actions
+- **Overlay Dungeon** : exploration de donjon avec déplacement WASD/Flèches
+- **Dialogues** : textes à taper dynamiquement entre chaque interaction
 
-### Effets Interactifs
-- Animation de typing pour le nom d'utilisateur
-- Particules colorées au clic des boutons
-- Effets de glow spécifiques à chaque plateforme
-- Parallax léger sur les étoiles d'arrière-plan
+## 🛠 Technologies utilisées
 
-## 🛠️ Technologies Utilisées
+- **HTML5** : page unique
+- **CSS3** : mise en page, animations, effet CRT, responsive
+- **JavaScript Vanilla** : interactions, mini-jeux, stockage local
+- **Google Fonts** : police `Press Start 2P`
 
-- **HTML5** : Structure sémantique
-- **CSS3** : Animations, gradients, grid/flexbox
-- **JavaScript Vanilla** : Interactions et effets dynamiques
-- **Google Fonts** : Police "Press Start 2P"
-- **SVG Icons** : Logos officiels des réseaux sociaux
-
-## 📁 Structure du Projet
+## 📁 Structure du projet
 
 ```
 linktree/
-│
-├── index.html              # Page principale
-├── css/
-│   └── style.css          # Styles et animations
-├── js/
-│   └── script.js          # Interactions JavaScript
-├── assets/
-│   └── avatar.png         # Avatar VTuber (à ajouter)
-└── README.md              # Documentation
+├── CNAME                 # Fichier de domaine personnalisé pour GitHub Pages
+├── index.html            # Page principale
+├── style.css             # Styles et animations
+├── script.js             # Logique JavaScript et mini-jeux
+├── README.md             # Documentation du projet
+└── assets/
+    ├── avatar.png        # Avatar de personnage
+    └── avatar.png      # Sprite référencé dans index.html
 ```
+
+> Note : `index.html` référence `assets/avatar.png`. Si ce fichier n'est pas présent, remplacez la source par `assets/avatar.png` ou ajoutez votre propre image.
 
 ## 🚀 Installation
 
 1. **Cloner le projet**
 ```bash
-git clone https://github.com/LeYapson/linktree-pixel.git
-cd linktree-pixel
+git clone <votre-repo>
+cd linktree
 ```
 
-2. **Ajouter votre avatar**
-   - Placez votre image d'avatar dans `assets/avatar.png`
-   - Format recommandé : 256x256px, PNG avec transparence
+2. **Ouvrir la page**
+- Double-cliquez sur `index.html`
+- Ou servez le dossier via un serveur local pour un meilleur support des assets
 
 3. **Personnaliser les liens**
-   - Ouvrez `index.html`
-   - Remplacez les URLs par vos vrais liens
-   - Modifiez les textes selon vos besoins
+- Éditez `index.html`
+- Remplacez les URLs de Twitch, X, Discord, YouTube et Ko-fi par vos propres liens
 
-4. **Lancer le projet**
-   - Ouvrez `index.html` dans votre navigateur
-   - Ou utilisez un serveur local pour le développement
+4. **Remplacer l'avatar**
+- Ajoutez votre image dans `assets/avatar.png`
+- Ou mettez à jour la balise `<img>` dans `index.html` pour pointer vers `assets/avatar.png`
 
 ## ⚙️ Personnalisation
 
-### Couleurs
-Modifiez les variables CSS dans `style.css` :
+### Modifier les couleurs
+Ajustez les variables CSS dans `style.css` :
+
 ```css
 :root {
-    --bg-primary: #0a0a23;      /* Fond principal */
-    --bg-secondary: #1a1a3a;    /* Fond secondaire */
-    --accent-pink: #ff6b9d;     /* Accent rose */
-    --accent-blue: #4dabf7;     /* Accent bleu */
-    --accent-purple: #9775fa;   /* Accent violet */
-    --accent-green: #51cf66;    /* Accent vert */
-    --accent-orange: #ff922b;   /* Accent orange */
+  --bg: #07040f;
+  --panel: #110d22;
+  --panel-inner: #0d091c;
+  --border: #5030a0;
+  --border-hi: #9060e0;
+  --gold: #d4a020;
+  --pink: #d040a0;
+  --pink-hi: #f060c0;
+  --text: #ece4f8;
+  --text-dim: #7060a0;
 }
 ```
 
-### Liens Personnalisés
-Dans `index.html`, remplacez :
-```html
-<!-- Réseaux sociaux -->
-<a href="https://twitch.tv/VOTRE_PSEUDO" class="social-icon" data-platform="twitch">
+### Adapter le contenu
+- `index.html` contient les labels de menu, les liens et les textes de dialogue
+- `script.js` gère les dialogues, le duel, le donjon et les sons
+- `style.css` définit le design pixel, le CRT et les animations
 
-<!-- Liens de support -->
-<a href="https://throne.com/VOTRE_PSEUDO" class="link-button" data-color="pink">
-
-<!-- Contact professionnel -->
-<a href="mailto:votre-email@domaine.com" class="link-button" data-color="blue">
-```
-
-### Animations
-Désactiver certains effets si nécessaire :
-```css
-/* Désactiver la neige */
-/* Commentez l'appel à createPixelSnow() dans script.js */
-
-/* Réduire les animations */
-.avatar {
-    /* animation: none; */
-}
-```
-
-## 🎨 Guide de Style
-
-### Palette de Couleurs
-- **Fond Principal** : `#0a0a23` (Bleu foncé)
-- **Fond Secondaire** : `#1a1a3a` (Bleu moyen)
-- **Texte Principal** : `#ffffff` (Blanc)
-- **Texte Secondaire** : `#b8b8ff` (Bleu clair)
-- **Accents** : Rose, Bleu, Violet, Vert, Orange
-
-### Typographie
-- **Police Principale** : "Press Start 2P" (Google Fonts)
-- **Tailles** : Responsive avec em/rem
-- **Effets** : Ombres portées pour l'effet pixel
+### Désactiver les effets
+- Pour enlever le boot screen, commentez l'appel à `dismissBoot()` ou supprimez le bloc correspondant
+- Pour modifier les sons, éditez la section `SFX` dans `script.js`
 
 ## 📱 Responsive Design
 
-- **Mobile** : < 480px - Interface optimisée tactile
-- **Tablette** : 480px - 768px - Adaptation des tailles
-- **Desktop** : > 768px - Expérience complète
+Le projet est conçu pour s'adapter aux écrans mobiles et desktop, avec un panneau central optimisé et des boutons lisibles.
 
 ## 🔧 Développement
 
 ### Prérequis
-- Navigateur moderne (Chrome, Firefox, Safari, Edge)
+- Navigateur moderne (Chrome, Firefox, Edge, Safari)
 - Éditeur de code (VS Code recommandé)
-- Serveur local optionnel pour le développement
 
-### Scripts Utiles
+### Tester localement
 ```bash
-# Serveur local simple avec Python
 python -m http.server 8000
-
-# Ou avec Node.js
-npx http-server
 ```
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! Pour contribuer :
-
+Contributions bienvenues :
 1. Forkez le projet
-2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Committez vos changements (`git commit -m 'Add AmazingFeature'`)
-4. Poussez vers la branche (`git push origin feature/AmazingFeature`)
+2. Créez une branche feature
+3. Committez vos modifications
+4. Poussez vers votre branche
 5. Ouvrez une Pull Request
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+Aucune licence n'est fournie dans le dépôt actuel.
 
 ## 👤 Auteur
 
-**yatokishi** - VTuber | Streamer | Pixel Artist & Developer
+**yatokishi** - VTuber / Streamer / Pixel Artist
 
-- 🎮 Twitch: [@yatokishi](https://twitch.tv/yatokishi)
-- 🐦 Twitter: [@yatokishi](https://twitter.com/yatokishi)
-- 📺 YouTube: [@yatokishi](https://youtube.com/@yatokishi)
-- 💬 Discord: [Serveur](https://discord.gg/93fJgDmhec)
-
-## 🙏 Remerciements
-
-- Google Fonts pour la police "Press Start 2P"
-- Simple Icons pour les logos SVG des réseaux sociaux
-- La communauté VTuber pour l'inspiration
-
-## 📈 Roadmap
-
-- [ ] Mode sombre/clair
-- [ ] Thèmes de couleurs personnalisables
-- [ ] Intégration API réseaux sociaux
-- [ ] Analytics intégrés
-- [ ] PWA (Progressive Web App)
-- [ ] Générateur de thèmes
+- Twitch: `https://twitch.tv/yatokishi`
+- X: `https://x.com/yatokishi`
+- Discord: `https://discord.gg/93fJgDmhec`
+- YouTube: `https://www.youtube.com/@yatokishi`
 
 ---
 
-⭐ **N'oubliez pas de star le projet si il vous plaît !** ⭐
+⭐ N'hésitez pas à étoiler le projet si vous appréciez le travail ! ⭐
 
-Made with ❤️ and pixels
