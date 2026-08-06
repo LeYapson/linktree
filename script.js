@@ -79,9 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ── Boot sequence ────────────────────────────────────────────── */
-  const bootScreen   = document.getElementById('boot-screen');
-  const bootLinesEl  = document.getElementById('boot-lines');
-  const bootPromptEl = document.getElementById('boot-prompt');
+  const bootScreen  = document.getElementById('boot-screen');
+  const bootLinesEl = document.getElementById('boot-lines');
 
   const isReturning  = sessionStorage.getItem('yato-booted');
   sessionStorage.setItem('yato-booted', '1');
@@ -136,8 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   bootTimers.push(setTimeout(() => {
     if (!bootDismissed) {
-      bootPromptEl.classList.add('visible');
       SFX.bootReady();
+      setTimeout(dismissBoot, 900);
     }
   }, promptDelay));
 

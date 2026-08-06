@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,6 +16,7 @@
   --red:         #e03068;
   --green:       #50b888;
   --yellow:      #f0d000;
+  --font-body:   'Space Grotesk', sans-serif;
 }
 
 html, body {
@@ -134,9 +135,9 @@ body::before {
   letter-spacing: 2px;
 }
 
-.npc-class  { font-size: 6px; color: var(--text-dim); }
-.npc-lvl    { font-size: 6px; color: var(--pink); }
-.npc-record { font-size: 6px; color: var(--text-dim); margin-top: 1px; }
+.npc-class  { font-family: var(--font-body); font-size: 11px; color: var(--text-dim); }
+.npc-lvl    { font-family: var(--font-body); font-size: 11px; color: var(--pink); }
+.npc-record { font-family: var(--font-body); font-size: 10px; color: var(--text-dim); margin-top: 1px; }
 
 .hp-bar {
   display: flex;
@@ -144,7 +145,7 @@ body::before {
   gap: 6px;
   margin-top: 2px;
 }
-.hp-label { font-size: 6px; color: var(--text-dim); width: 18px; }
+.hp-label { font-family: var(--font-body); font-size: 10px; color: var(--text-dim); width: 22px; }
 .hp-track {
   flex: 1;
   height: 8px;
@@ -169,7 +170,7 @@ body::before {
     rgba(0,0,0,0.2) 3px, rgba(0,0,0,0.2) 4px
   );
 }
-.hp-num { font-size: 6px; color: var(--text-dim); }
+.hp-num { font-family: var(--font-body); font-size: 10px; color: var(--text-dim); }
 
 /* ── Dialog box ── */
 .dialog {
@@ -196,8 +197,9 @@ body::before {
 }
 
 .dialog-body {
-  font-size: 8px;
-  line-height: 2.2;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.75;
   color: var(--text);
   white-space: pre-wrap;
   min-height: 56px;
@@ -212,8 +214,9 @@ body::before {
 }
 
 .dialog-hint {
+  font-family: var(--font-body);
   text-align: center;
-  font-size: 6px;
+  font-size: 10px;
   color: var(--text-dim);
   margin-top: -6px;
 }
@@ -266,6 +269,22 @@ body::before {
 
 .menu-item .ico { font-size: 11px; width: 18px; text-align: center; flex-shrink: 0; }
 .menu-item .lbl { font-size: 8px; flex: 1; }
+
+.p-ico {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.35;
+  color: var(--text-dim);
+  margin-right: 72px;
+  transition: opacity 0.08s, color 0.08s;
+}
+
+.menu-item:hover .p-ico,
+.menu-item:focus .p-ico {
+  opacity: 0.9;
+  color: var(--pink-hi);
+}
 
 /* ── Duel trigger ── */
 .duel-trigger {
@@ -485,12 +504,13 @@ body::before {
 .hp-player     { background: #4080e0 !important; }
 
 .battle-log {
+  font-family: var(--font-body);
   background: var(--panel-inner);
   border: 2px solid var(--border);
   padding: 10px 12px;
   min-height: 62px;
-  font-size: 7px;
-  line-height: 2.1;
+  font-size: 12px;
+  line-height: 1.7;
   color: var(--text);
   white-space: pre-wrap;
 }
@@ -790,13 +810,14 @@ body::before {
 /* ── Dungeon log ── */
 
 .dungeon-log {
+  font-family: var(--font-body);
   background: var(--panel-inner);
   border: 2px solid var(--border);
   padding: 8px 12px;
-  font-size: 6px;
+  font-size: 11px;
   color: var(--green);
   min-height: 28px;
-  line-height: 2;
+  line-height: 1.7;
 }
 
 
