@@ -1,4 +1,4 @@
-# 🎮 YATOKISHI Linktree Pixel OS
+# 🎮 YATOKISHI Linktree Pixel OS !
 
 Un site Linktree rétro inspiré des interfaces RPG et consoles 8-bit, avec un menu interactif, un boot screen animé, et deux mini-jeux intégrés.
 
