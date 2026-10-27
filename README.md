@@ -15,6 +15,7 @@ Un site Linktree rétro inspiré des interfaces RPG et consoles 8-bit, avec un m
 - 🕹️ **Contrôles clavier et clics** pour navigation et gameplay
 - 🗄️ **Enregistrement local** du record et de l'or gagné
 - 🖥️ **Design pixel art responsive** avec effet CRT
+- 🌐 **Bascule EN / FR** : bouton en haut à droite du portrait, choix mémorisé (textes dans `i18n.js`)
 
 ## 🎯 Sections du projet
 

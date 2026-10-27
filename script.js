@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ── 8-bit SFX (Web Audio API) ───────────────────────────────── */
   let audioCtx = null;
 
+  let muted = false;
+  try { muted = localStorage.getItem('yato-muted') === '1'; } catch {}
+
   const SFX = {
     _init() {
       try {
@@ -18,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     _play({ freq = 440, dur = 0.1, type = 'square', vol = 0.07, delay = 0 }) {
+      if (muted) return;
       this._init();
       if (!audioCtx) return;
       try {
@@ -78,31 +82,46 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
 
+  /* ── Sound toggle ─────────────────────────────────────────────── */
+  const soundBtn = document.getElementById('sound-toggle');
+  function renderSound() { soundBtn.textContent = muted ? '🔇' : '🔊'; }
+  soundBtn.addEventListener('click', () => {
+    muted = !muted;
+    try { localStorage.setItem('yato-muted', muted ? '1' : '0'); } catch {}
+    renderSound();
+    if (!muted) SFX.select();
+  });
+  renderSound();
+
+
   /* ── Boot sequence ────────────────────────────────────────────── */
   const bootScreen  = document.getElementById('boot-screen');
   const bootLinesEl = document.getElementById('boot-lines');
 
-  const isReturning  = sessionStorage.getItem('yato-booted');
-  sessionStorage.setItem('yato-booted', '1');
+  let isReturning = null;
+  try {
+    isReturning = localStorage.getItem('yato-booted');
+    localStorage.setItem('yato-booted', '1');
+  } catch {}
 
   let bootDismissed = false;
   const bootTimers  = [];
 
   const FULL_BOOT = [
-    { label: '> INITIALIZING CHAOS.....',  status: '[ OK ]',   cls: 'ok',   t: 500  },
-    { label: '> LOADING STREAMER........', status: '[ OK ]',   cls: 'ok',   t: 900  },
-    { label: '> CHECKING SANITY.........',  status: '[FAIL]',  cls: 'fail', t: 1300 },
-    { label: '> IGNORING ERROR..........',  status: '[ OK ]',  cls: 'ok',   t: 1650 },
-    { label: '> BREWING CONTENT.........',  status: '[ OK ]',  cls: 'ok',   t: 2050 },
-    { label: '> SUMMONING YATOKISHI....',   status: '[ OK ]',  cls: 'ok',   t: 2500 },
-    { label: '',                             status: '',        cls: '',     t: 2850 },
-    { label: 'SYSTEM READY.',               status: '',        cls: '',     t: 2950 },
-    { label: '> LAUNCHING YATOKISHI.EXE',  status: '',        cls: '',     t: 3350 },
+    { label: T('boot.chaos'),    status: '[ OK ]',       cls: 'ok',   t: 500  },
+    { label: T('boot.streamer'), status: '[ OK ]',       cls: 'ok',   t: 900  },
+    { label: T('boot.sanity'),   status: T('boot.fail'), cls: 'fail', t: 1300 },
+    { label: T('boot.ignore'),   status: '[ OK ]',       cls: 'ok',   t: 1650 },
+    { label: T('boot.brew'),     status: '[ OK ]',       cls: 'ok',   t: 2050 },
+    { label: T('boot.summon'),   status: '[ OK ]',       cls: 'ok',   t: 2500 },
+    { label: '',                 status: '',             cls: '',     t: 2850 },
+    { label: T('boot.ready'),    status: '',             cls: '',     t: 2950 },
+    { label: T('boot.launch'),   status: '',             cls: '',     t: 3350 },
   ];
 
   const QUICK_BOOT = [
-    { label: '> RECONNECTING.........',  status: '[ OK ]',  cls: 'ok',  t: 200 },
-    { label: 'WELCOME BACK.',            status: '',        cls: '',    t: 500 },
+    { label: T('boot.reconnect'), status: '[ OK ]', cls: 'ok', t: 200 },
+    { label: T('boot.welcome'),   status: '',       cls: '',   t: 500 },
   ];
 
   const bootSequence = isReturning ? QUICK_BOOT : FULL_BOOT;
@@ -180,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!recordEl) return;
     const s = getStats();
     recordEl.textContent = (s.w === 0 && s.l === 0)
-      ? 'DUEL RECORD: NEW'
-      : `W:${s.w} L:${s.l} · ${s.g}G WON`;
+      ? T('record.new')
+      : T('record.stats', { w: s.w, l: s.l, g: s.g });
   }
   function recordWin(reward) {
     const s = getStats(); s.w++; s.g += reward; saveStats(s); updateRecord();
@@ -194,22 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ── Dialog typewriter ────────────────────────────────────────── */
-  const DIALOGS = [
-    "Ah, a new viewer!\nWelcome to the stream.\nDon't forget to follow~",
-    "I'm not responsible\nfor any brain rot caused\nby watching me.",
-    "Yes I take requests.\nNo I will not do\na normal one.",
-    "I said I'd go live\nat 8pm. It is now\n2am. I'm ready.",
-    "My chat is feral but\nthey're MY feral chat.\nDon't touch them.",
-    "I'm always live at\nthe worst possible hours.\nTimezones are fake.",
-  ];
+  // Les textes des dialogues (dialogs / konami) sont dans i18n.js
 
-  const KONAMI_DIALOGS = [
-    "oh you found the void.\nit smells like instant\nnoodles in here.",
-    "yatokishi was not\nprepared for this.\nnobody ever is.",
-    "+999G added to your\nwallet. don't ask\nwhere it came from.",
-  ];
-
-  let activeDialogs  = DIALOGS;
+  let activeKey      = 'dialogs';
   let dialogIdx      = 0;
   let isTyping       = false;
   let typeTimer      = null;
@@ -243,11 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
       isTyping = false;
       dialogNextEl.style.visibility = 'visible';
     } else {
-      dialogIdx = (dialogIdx + 1) % activeDialogs.length;
-      if (activeDialogs === KONAMI_DIALOGS && dialogIdx === 0) {
-        activeDialogs = DIALOGS; dialogIdx = 0;
+      dialogIdx = (dialogIdx + 1) % TL(activeKey).length;
+      if (activeKey === 'konami' && dialogIdx === 0) {
+        activeKey = 'dialogs'; dialogIdx = 0;
       }
-      typeText(activeDialogs[dialogIdx]);
+      typeText(TL(activeKey)[dialogIdx]);
     }
   }
 
@@ -256,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); advanceDialog(); }
   });
 
-  typeText(DIALOGS[0]);
+  typeText(TL('dialogs')[0]);
 
   document.querySelectorAll('.menu-item').forEach(item =>
     item.addEventListener('mouseenter', () => SFX.hover())
@@ -308,10 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let bs = { playerHP: PLAYER_MAX, enemyHP: ENEMY_MAX, active: false };
 
   const ENEMY_MOVES = [
-    () => { const d = rng(10,20); return { dmg: d, msg: `yatokishi slashes!\n−${d} HP to you.`,         rage: false }; },
-    () => { const d = rng(18,32); return { dmg: d, msg: `chat goes WILD!\nyatokishi RAGES! −${d}!`,     rage: true  }; },
-    () =>                       ({ dmg: 0,          msg: `yatokishi went AFK...\n(0 damage this turn)`, rage: false }),
-    () => { const d = rng(5,14);  return { dmg: d, msg: `yatokishi spam-clicks!\n−${d} HP!`,            rage: false }; },
+    () => { const d = rng(10,20); return { dmg: d, msg: T('battle.slash', { d }), rage: false }; },
+    () => { const d = rng(18,32); return { dmg: d, msg: T('battle.rage', { d }),  rage: true  }; },
+    () =>                       ({ dmg: 0,          msg: T('battle.afk'),         rage: false }),
+    () => { const d = rng(5,14);  return { dmg: d, msg: T('battle.spam', { d }),  rage: false }; },
   ];
   const ENEMY_POOL = [0, 0, 0, 1, 1, 2, 3, 3, 3];
 
@@ -374,22 +380,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dungeon.active) {
         const xp = rng(30, 50);
         dungeon.pendingXP = xp;
-        B.resultMsg.textContent = `YOU WIN!\n+${xp} XP EARNED!\n"gg no re" — yato`;
+        B.resultMsg.textContent = T('result.winDungeon', { xp });
       } else {
-        B.resultMsg.textContent = `YOU WIN!\nyatokishi drops ${reward}G\n"gg no re" — yato`;
+        B.resultMsg.textContent = T('result.win', { reward });
       }
     } else if (outcome === 'flee') {
       SFX.flee();
       B.resultMsg.style.color = 'var(--text-dim)';
-      B.resultMsg.textContent = `got away safely!\n"coward" — yatokishi`;
+      B.resultMsg.textContent = T('result.flee');
     } else {
       recordLoss();
       SFX.lose();
       B.resultMsg.style.color = 'var(--red)';
       if (dungeon.active) {
-        B.resultMsg.textContent = `DEFEATED!\nyatokishi wins.\n"offer tribute" — chat`;
+        B.resultMsg.textContent = T('result.loseDungeon');
       } else {
-        B.resultMsg.textContent = `SKILL ISSUE\nyatokishi wins.\n"stay mad" — chat`;
+        B.resultMsg.textContent = T('result.lose');
       }
     }
   }
@@ -400,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bs.enemyHP < 18 && Math.random() < 0.45) {
       const h = rng(10, 18);
       bs.enemyHP = Math.min(ENEMY_MAX, bs.enemyHP + h);
-      battleLog(`yatokishi chugs a\nsuper potion! +${h}HP`);
+      battleLog(T('battle.potion', { h }));
       updateBars();
       lockActions(false);
       return;
@@ -430,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const d = rng(15, 25);
       bs.enemyHP -= d;
       flashSprite(); SFX.attack();
-      battleLog(`you attack!\n−${d} HP to yatokishi.`);
+      battleLog(T('player.attack', { d }));
 
     } else if (type === 'magic') {
       SFX.magic();
@@ -438,9 +444,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = rng(25, 40);
         bs.enemyHP -= d;
         flashSprite();
-        battleLog(`magic strike!\n−${d} HP! critical hit!`);
+        battleLog(T('player.magic', { d }));
       } else {
-        battleLog(`magic missed...\n"skill issue" — chat`);
+        battleLog(T('player.miss'));
       }
 
     } else if (type === 'heal') {
@@ -448,12 +454,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const pMax = dungeon.active ? dungeon.maxHP : PLAYER_MAX;
       bs.playerHP = Math.min(pMax, bs.playerHP + h);
       SFX.heal();
-      battleLog(`you use a potion!\n+${h} HP restored.`);
+      battleLog(T('player.heal', { h }));
 
     } else if (type === 'flee') {
       if (Math.random() < 0.55) {
         SFX.flee();
-        battleLog(`you run away!\n"smart." — yatokishi`);
+        battleLog(T('player.flee'));
         updateBars();
         setTimeout(() => endBattle('flee'), 700);
         return;
@@ -461,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = rng(15, 25);
         bs.playerHP -= d;
         shakePlayerBar(); SFX.hit();
-        battleLog(`no escape! blocked!\nshe punishes for −${d}!`);
+        battleLog(T('player.noEscape', { d }));
         updateBars();
         if (bs.playerHP <= 0) { setTimeout(() => endBattle('lose'), 500); return; }
         lockActions(false);
@@ -482,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lockActions(false);
     updateBars();
     SFX.select();
-    battleLog(`yatokishi cracks her\nknuckles. let's go.`);
+    battleLog(T('battle.start'));
     B.overlay.classList.add('active');
   }
 
@@ -520,10 +526,10 @@ document.addEventListener('DOMContentLoaded', () => {
     flash.className = 'konami-flash';
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 600);
-    activeDialogs = KONAMI_DIALOGS;
+    activeKey    = 'konami';
     dialogIdx     = 0;
     if (typeTimer) clearTimeout(typeTimer);
-    typeText(KONAMI_DIALOGS[0]);
+    typeText(TL('konami')[0]);
   }
 
   /* ── Dungeon ──────────────────────────────────────────────────── */
@@ -543,11 +549,11 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const TREASURE_DATA = {
-    3: { label: 'ENTER THE ARENA', icon: '◉', hint: 'twitch.tv/yatokishi',    url: 'https://twitch.tv/yatokishi' },
-    4: { label: 'SEND A RAVEN',    icon: '✉', hint: 'x.com/yatokishi',        url: 'https://x.com/yatokishi' },
-    5: { label: 'JOIN THE GUILD',  icon: '⚔', hint: 'discord.gg/93fJgDmhec', url: 'https://discord.gg/93fJgDmhec' },
-    6: { label: 'THE CHRONICLES',  icon: '📜', hint: 'youtube.com/@yatokishi', url: 'https://www.youtube.com/@yatokishi' },
-    7: { label: 'OFFER TRIBUTE',   icon: '◆', hint: 'ko-fi.com/yatokishi',    url: 'https://ko-fi.com/yatokishi' },
+    3: { label: 'menu.twitch',  icon: '◉', hint: 'twitch.tv/yatokishi',    url: 'https://twitch.tv/yatokishi' },
+    4: { label: 'menu.x',       icon: '✉', hint: 'x.com/yatokishi',        url: 'https://x.com/yatokishi' },
+    5: { label: 'menu.discord', icon: '⚔', hint: 'discord.gg/93fJgDmhec', url: 'https://discord.gg/93fJgDmhec' },
+    6: { label: 'menu.youtube', icon: '📜', hint: 'youtube.com/@yatokishi', url: 'https://www.youtube.com/@yatokishi' },
+    7: { label: 'menu.kofi',    icon: '◆', hint: 'ko-fi.com/yatokishi',    url: 'https://ko-fi.com/yatokishi' },
   };
 
   const D_COLS = 15, D_ROWS = 11;
@@ -610,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
     DhpN.textContent = `${dungeon.playerHP}/${dungeon.maxHP}`;
     DxpF.style.width = Math.min(100, xpInLevel / 100 * 100) + '%';
     DxpN.textContent = `${xpInLevel}/100`;
-    DlvL.textContent = `LV.${dungeon.level}`;
+    DlvL.textContent = T('hud.level', { n: dungeon.level });
     DtrC.textContent = `◆ ${dungeonTreasureCount()}/5`;
     if (dungeon.playerHP <= 25) {
       DhpF.style.background = 'var(--red)';
@@ -666,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dungeon.level++;
       dungeon.maxHP += 10;
       dungeon.playerHP = Math.min(dungeon.playerHP + 25, dungeon.maxHP);
-      dungeonLog(`LEVEL UP! Now LV.${dungeon.level}! HP restored.`);
+      dungeonLog(T('dungeon.levelUp', { n: dungeon.level }));
     }
   }
 
@@ -685,7 +691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Dov.classList.add('active');
     renderDungeonMap();
     updateDungeonHUD();
-    dungeonLog('DUNGEON OF YATO — FLOOR 1  ·  find all 5 treasures');
+    dungeonLog(T('dungeon.start'));
     SFX.select();
   }
 
@@ -698,13 +704,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function openTreasureDialog(type) {
     const data = TREASURE_DATA[type];
     document.getElementById('dt-icon').textContent = data.icon;
-    document.getElementById('dt-name').textContent = data.label;
+    document.getElementById('dt-name').textContent = T(data.label);
     document.getElementById('dt-url').textContent  = data.hint;
-    document.getElementById('dt-open').onclick = () => window.open(data.url, '_blank');
+    document.getElementById('dt-open').onclick = () => window.open(data.url, '_blank', 'noopener');
     document.getElementById('dt-close').onclick = () => {
       DTdialog.classList.remove('active');
       dungeon.playerHP = Math.min(dungeon.maxHP, dungeon.playerHP + 15);
-      dungeonLog(`★ ${data.label} found! +15 HP.`);
+      dungeonLog(T('dungeon.found', { label: T(data.label) }));
       renderDungeonMap();
       updateDungeonHUD();
     };
@@ -723,18 +729,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dungeon.battleEnemyPos) {
         dungeon.cellOverrides[`${dungeon.battleEnemyPos.col},${dungeon.battleEnemyPos.row}`] = 1;
       }
-      dungeonLog(`Enemy defeated! +${xp} XP`);
+      dungeonLog(T('dungeon.defeated', { xp }));
       renderDungeonMap();
       updateDungeonHUD();
     } else if (outcome === 'lose') {
-      dungeonLog('DEFEATED... offering tribute...');
+      dungeonLog(T('dungeon.lost'));
       setTimeout(() => { window.location.href = 'https://ko-fi.com/yatokishi'; }, 800);
     } else if (outcome === 'flee') {
       if (dungeon.battlePrevPos) {
         dungeon.playerCol = dungeon.battlePrevPos.col;
         dungeon.playerRow = dungeon.battlePrevPos.row;
       }
-      dungeonLog('Escaped! The enemy remains...');
+      dungeonLog(T('dungeon.escaped'));
       renderDungeonMap();
       updateDungeonHUD();
     }
@@ -771,13 +777,13 @@ document.addEventListener('DOMContentLoaded', () => {
       dungeon.battleEnemyPos = { col: newCol, row: newRow };
       dungeon.battlePrevPos  = { col: prevCol, row: prevRow };
       renderDungeonMap();
-      dungeonLog('An enemy appears!');
+      dungeonLog(T('dungeon.enemy'));
       startBattle();
     } else if (type === 9) {
       renderDungeonMap();
       updateDungeonHUD();
       const found = dungeonTreasureCount();
-      dungeonLog(`EXIT REACHED! ${found}/5 treasures found.`);
+      dungeonLog(T('dungeon.exit', { n: found }));
       SFX.win();
       spawnParticles();
       addGold(rng(100, 200));
@@ -821,6 +827,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       konamiIdx = (e.key === KONAMI_SEQ[0]) ? 1 : 0;
     }
+  });
+
+  /* ── Language change ──────────────────────────────────────────── */
+  onLangChange(() => {
+    updateRecord();
+    if (dungeon.active) updateDungeonHUD();
+    if (bootDismissed) typeText(TL(activeKey)[dialogIdx]);
   });
 
 });

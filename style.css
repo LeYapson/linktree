@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500&display=swap');
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -12,7 +10,7 @@
   --pink:        #d040a0;
   --pink-hi:     #f060c0;
   --text:        #ece4f8;
-  --text-dim:    #7060a0;
+  --text-dim:    #9a8bd0;
   --red:         #e03068;
   --green:       #50b888;
   --yellow:      #f0d000;
@@ -45,7 +43,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9990;
+  z-index: 0;
   background: repeating-linear-gradient(
     to bottom,
     transparent 0,
@@ -57,6 +55,8 @@ body::before {
 
 /* Page layout */
 .wrap {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -190,7 +190,7 @@ body::before {
   position: absolute;
   top: -9px;
   left: 10px;
-  font-size: 6px;
+  font-size: 7px;
   background: var(--panel);
   padding: 0 5px;
   color: var(--pink-hi);
@@ -251,9 +251,8 @@ body::before {
 
 .menu-item::after {
   content: attr(data-tip);
-  position: absolute;
-  right: 12px;
-  font-size: 6px;
+  order: 1;
+  font-size: 7px;
   color: var(--text-dim);
   transition: color 0.08s;
 }
@@ -276,7 +275,8 @@ body::before {
   flex-shrink: 0;
   opacity: 0.35;
   color: var(--text-dim);
-  margin-right: 72px;
+  margin-right: 0;
+  order: 2;
   transition: opacity 0.08s, color 0.08s;
 }
 
@@ -311,7 +311,7 @@ body::before {
 .duel-cur { width: 10px; flex-shrink: 0; }
 .duel-ico { width: 18px; text-align: center; flex-shrink: 0; }
 .duel-lbl { flex: 1; }
-.duel-hint { font-size: 6px; color: var(--pink); }
+.duel-hint { font-size: 7px; color: var(--pink); }
 
 /* ── Status bar ── */
 .status-bar {
@@ -320,7 +320,7 @@ body::before {
   align-items: center;
   padding-top: 10px;
   border-top: 2px solid var(--border);
-  font-size: 6px;
+  font-size: 7px;
   color: var(--text-dim);
   flex-wrap: wrap;
   gap: 6px;
@@ -695,9 +695,9 @@ body::before {
   flex-wrap: wrap;
 }
 
-.d-hud-lbl { font-size: 6px; color: var(--text-dim); }
-.d-hud-sep { font-size: 6px; color: var(--border); }
-.d-hud-val { font-size: 6px; color: var(--text); }
+.d-hud-lbl { font-size: 7px; color: var(--text-dim); }
+.d-hud-sep { font-size: 7px; color: var(--border); }
+.d-hud-val { font-size: 7px; color: var(--text); }
 .d-level-val { color: var(--yellow); }
 .d-treasure-val { color: var(--gold); }
 
@@ -872,13 +872,13 @@ body::before {
 }
 
 .d-hint {
-  font-size: 6px;
+  font-size: 7px;
   color: var(--text-dim);
 }
 
 .d-exit-btn {
   font-family: 'Press Start 2P', monospace;
-  font-size: 6px;
+  font-size: 7px;
   background: var(--panel-inner);
   border: 2px solid var(--border);
   color: var(--text-dim);
@@ -949,7 +949,7 @@ body::before {
 }
 
 .dt-url {
-  font-size: 6px;
+  font-size: 7px;
   color: var(--text-dim);
   text-align: center;
 }
@@ -974,3 +974,59 @@ body::before {
   .dungeon-hud { gap: 4px; }
   .d-bar { width: 40px; }
 }
+
+
+/* ════════════════════════════════════════
+   LANGUAGE TOGGLE
+   ════════════════════════════════════════ */
+
+.npc-row { position: relative; }
+
+.lang-toggle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 6px 8px;
+  background: var(--panel);
+  border: 2px solid var(--border);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.08s, color 0.08s, border-color 0.08s;
+}
+
+.lang-toggle:hover,
+.lang-toggle:focus-visible {
+  background: #261450;
+  border-color: var(--border-hi);
+  color: var(--pink-hi);
+  outline: none;
+}
+
+
+@media (max-width: 520px) {
+  .menu-item::after { display: none; }
+}
+
+/* ════════════════════════════════════════
+   SOUND TOGGLE + TWITCH BADGE
+   ════════════════════════════════════════ */
+
+.sound-toggle { right: 54px; font-size: 10px; padding: 4px 6px; }
+
+.twitch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 4px 8px;
+  border: 2px solid var(--border);
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.twitch-dot { width: 6px; height: 6px; background: var(--text-dim); }
+.twitch-badge.live { border-color: var(--red); color: var(--red); }
+.twitch-badge.live .twitch-dot { background: var(--red); animation: blink 1s step-end infinite; }
